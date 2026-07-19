@@ -55,3 +55,6 @@ skip the confirmation gate, and never post to GitHub without an explicit `yes` o
 - Maximum **3** review passes per PR. If findings remain unresolved after 3 passes,
   stop and hand back to a human reviewer.
 - Stay in scope: comment only on the provided diff.
+- After every completed review (whether or not the user confirms posting), append one line to `review_history.md`:
+YYYY-MM-DD | PR-[number] | [top finding short description] | [severity]
+Example: 2026-05-15 | PR-03 | Hardcoded API token in PaymentService | HIGH

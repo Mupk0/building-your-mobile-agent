@@ -39,3 +39,8 @@ If a file has no architecture issues, write `No issues found.` under its heading
 
 Do not approve, request changes, or suggest a merge verdict — that is out of scope for
 this sub-agent. Return only the findings.
+
+Before reporting any architecture finding, search docs/adr/ using Grep for keywords
+related to the pattern you observed. If you find a matching ADR, cite it:
+"[MEDIUM] ViewModel calls API directly — violates ADR-003 (Repository Pattern)"
+If no ADR matches, report the finding without a citation.

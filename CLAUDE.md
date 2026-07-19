@@ -77,5 +77,7 @@ overall verdict. Do not phrase the verdict as an approval.
 - **Review-pass cap:** a maximum of **3** review passes per PR. If findings remain
   unresolved after that, stop and hand back to a human reviewer.
 - Stay in scope: comment only on the provided diff, not the wider codebase.
-- After a completed review, append one line to `review_history.md`:
-  `YYYY-MM-DD | PR-[number] | [top finding] | [severity]`.
+- **Episodic memory:** after every completed review (whether or not the user
+  confirms posting), append one line to `review_history.md`:
+  `YYYY-MM-DD | PR-[number] | [top finding short description] | [severity]`
+  Example: `2026-05-15 | PR-03 | Hardcoded API token in PaymentService | HIGH`
