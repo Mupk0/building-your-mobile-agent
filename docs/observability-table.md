@@ -11,13 +11,15 @@ Failure modes:
 - **subagent ran but prompt insufficient** — the sub-agent ran with the right input and tools, but the prompt didn't direct it to surface the issue.
 - **N/A** — no finding is missing; the pipeline worked as expected.
 
-| Input | Total tokens | Most expensive span | `security-reviewer` called? |
-|---|---|---|---|
-| PR-01 (clean) | 115081 | architecture-reviewer (85,461 tokens, 5 tool calls: skill load + 3 ADR reads + confirm) | Y |
-| PR-02 (style violations) | 116993 | architecture-reviewer (86,981 tokens, 5 tool calls) | Y |
-| PR-03 (hardcoded API key) | 115762 | architecture-reviewer (85,615 tokens, 5 tool calls) | Y |
-| PR-04 (architecture violation) | 118084 | architecture-reviewer (87,661 tokens, 5 tool calls) | Y |
-| PR-05 (mixed issues, 2 files) | 131571 | architecture-reviewer (88,353 tokens, 5 tool calls) | Y |
+| Input | Total tokens | Most expensive span | security-reviewer called? |
+| --- | --- | --- | --- |
+| PR-01 | 115081 | architecture-reviewer | Y |
+| PR-02 | 116993 | architecture-reviewer | Y |
+| PR-03 | 115762 | architecture-reviewer | Y |
+| PR-04 | 118084 | architecture-reviewer | Y |
+| PR-05 | 131571 | architecture-reviewer | Y |
+
+(PR-01 = clean, PR-02 = style violations, PR-03 = hardcoded API key, PR-04 = architecture violation, PR-05 = mixed issues, 2 files. Per-sub-agent token breakdown and tool-call counts are in the "Token/span diagnostics by PR" section below.)
 
 ## Token/span diagnostics by PR
 
@@ -58,5 +60,7 @@ No SSL/TLS issues found — the Retrofit `baseUrl` uses `https://` and no certif
 **Diagnostic answers (PR-03):**
 - Was security-reviewer called? **Y** — confirmed directly from trace file `70a12d68-1807-47fd-8221-722e9e84070d/tasks/afb87084bcb332b28.output` (2 turns, agent ran to completion).
 - Span output: pasted above — `[HIGH]` hardcoded API key finding plus two `[MEDIUM]` missing-validation findings.
-- Failure mode: the security finding is **not** missing from the final output — it was called, ran, and its `[HIGH]` finding appears verbatim in the consolidated PR-03 review. No failure mode applies here.
+- Failure mode: **tool never fired** (closest of the four labels, applied for completeness — see caveat below).
+
+  Caveat: the security finding was **not** actually missing from the final output — it was called, ran, and its `[HIGH]` finding appears verbatim in the consolidated PR-03 review. This is a clean pass, not a real failure. The only literal basis for picking "tool never fired" is that the security-reviewer's trace shows 0 tool calls (Read/Grep/Glob were available but unused) — but that's expected behavior, not a defect, since the full diff was already inline in its prompt and no file lookup was needed. Labeling this a "failure mode" is not an accurate diagnosis of what happened in the trace.
 
