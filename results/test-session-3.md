@@ -250,3 +250,12 @@ so no GitHub comment was posted and `review_history.md` had not yet been appende
 Found that `results/test-session-3.md` already existed as a placeholder template
 requesting exactly this transcript. Read it, then replaced it with the full
 transcript above.
+
+---
+
+## Evidence — selective skill loading
+
+- **Swift selective-loading test (PR #2):** `swift-conventions` loaded for the Swift PR
+  (`src/ProfileViewModel.swift`); `kotlin-conventions` was not loaded. See Turn 1.
+- **Kotlin selective-loading test (PR #4):** `kotlin-conventions` loaded for the Kotlin PR
+  (`src/TripViewModel.kt`); `swift-conventions` was not loaded. See Turn 2.

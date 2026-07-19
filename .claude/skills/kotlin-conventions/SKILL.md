@@ -1,6 +1,6 @@
 ---
 name: kotlin-conventions
-description: "Kotlin (Android) style and convention rules for the mobile team. Load when reviewing any .kt file in a PR diff — covers naming, coroutines, and Jetpack/lifecycle usage. Used by the style-reviewer sub-agent."
+description: "Kotlin (Android) style and convention rules for the mobile team. Load ONLY for Kotlin PRs — i.e. when the diff contains one or more .kt files; do not load for Swift-only PRs. Covers naming, coroutines, and Jetpack/lifecycle usage. Used by the style-reviewer sub-agent."
 ---
 
 # Kotlin Conventions

@@ -1,6 +1,6 @@
 ---
 name: swift-conventions
-description: "Swift (iOS) style and convention rules for the mobile team. Load when reviewing any .swift file in a PR diff — covers naming, concurrency (async/await, GCD), and UIKit/SwiftUI framework usage. Used by the style-reviewer sub-agent."
+description: "Swift (iOS) style and convention rules for the mobile team. Load ONLY for Swift PRs — i.e. when the diff contains one or more .swift files; do not load for Kotlin-only PRs. Covers naming, concurrency (async/await, GCD), and UIKit/SwiftUI framework usage. Used by the style-reviewer sub-agent."
 ---
 
 # Swift Conventions
