@@ -12,7 +12,6 @@ Failure modes:
 - **N/A** — no finding is missing; the pipeline worked as expected.
 
 | Input | Total tokens | Most expensive span | `security-reviewer` called? |
-|---|---|---|---|
 | PR-01 (clean) | 115,081 (22,683 + 6,937 + 85,461) | architecture-reviewer (85,461 tokens, 5 tool calls: skill load + 3 ADR reads + confirm) | Y |
 | PR-02 (style violations) | 116,993 (22,911 + 7,101 + 86,981) | architecture-reviewer (86,981 tokens, 5 tool calls) | Y |
 | PR-03 (hardcoded API key) | 115,762 (22,903 + 7,244 + 85,615) | architecture-reviewer (85,615 tokens, 5 tool calls) | Y |
@@ -53,5 +52,10 @@ Notes:
 [MEDIUM] `charge(amount: Int, token: String)` performs no validation of the `token` (payment/card token) format or presence before use in the charge request — missing input validation on user-supplied data
 
 No SSL/TLS issues found — the Retrofit `baseUrl` uses `https://` and no certificate/hostname validation is disabled or bypassed in this diff.
-sub-agent not called
 ```
+
+**Diagnostic answers (PR-03):**
+- Was security-reviewer called? **Y** — confirmed directly from trace file `70a12d68-1807-47fd-8221-722e9e84070d/tasks/afb87084bcb332b28.output` (2 turns, agent ran to completion).
+- Span output: pasted above — `[HIGH]` hardcoded API key finding plus two `[MEDIUM]` missing-validation findings.
+- Failure mode: **N/A** — the finding is not missing. It was called, returned, and appears in the final consolidated review as the top `[HIGH]` item. None of the four failure modes (subagent not called / wrong input / tool never fired / prompt insufficient) apply.
+
