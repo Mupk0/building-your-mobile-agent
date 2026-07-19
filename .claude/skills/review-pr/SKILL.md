@@ -11,9 +11,11 @@ skip the confirmation gate, and never post to GitHub without an explicit `yes` o
 
 ## Steps
 
-1. **Fetch the PR.** Read the PR number or URL from the invocation. Use the GitHub MCP to
-   fetch the PR metadata and the full diff (changed files + hunks). If no PR is given,
-   ask which PR to review and stop until answered.
+1. **Fetch the PR via GitHub MCP.** Read the PR number or URL from the invocation, then
+   call the GitHub MCP to fetch the PR metadata and the full diff (changed files + hunks).
+   Do not proceed without the diff. If no PR is given, ask which PR to review and stop
+   until answered. If the GitHub MCP is unavailable or the fetch fails, stop and report
+   it — never review from assumed or pasted content unless the user explicitly provides it.
 
 2. **Route files by type.** From the diff, collect the changed `.swift` files and the
    changed `.kt` files. Only consider lines added or modified by the diff — never
