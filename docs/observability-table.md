@@ -12,11 +12,11 @@ Failure modes:
 - **N/A** — no finding is missing; the pipeline worked as expected.
 
 | Input | Total tokens | Most expensive span | `security-reviewer` called? |
-| PR-01 (clean) | 115,081 | architecture-reviewer (85,461 tokens, 5 tool calls: skill load + 3 ADR reads + confirm) | Y |
-| PR-02 (style violations) | 116,993 | architecture-reviewer (86,981 tokens, 5 tool calls) | Y |
-| PR-03 (hardcoded API key) | 115,762 | architecture-reviewer (85,615 tokens, 5 tool calls) | Y |
-| PR-04 (architecture violation) | 118,084 | architecture-reviewer (87,661 tokens, 5 tool calls) | Y |
-| PR-05 (mixed issues, 2 files) | 131,571 | architecture-reviewer (88,353 tokens, 5 tool calls) | Y |
+| PR-01 (clean) | 115081 | architecture-reviewer (85,461 tokens, 5 tool calls: skill load + 3 ADR reads + confirm) | Y |
+| PR-02 (style violations) | 116993 | architecture-reviewer (86,981 tokens, 5 tool calls) | Y |
+| PR-03 (hardcoded API key) | 115762 | architecture-reviewer (85,615 tokens, 5 tool calls) | Y |
+| PR-04 (architecture violation) | 118084 | architecture-reviewer (87,661 tokens, 5 tool calls) | Y |
+| PR-05 (mixed issues, 2 files) | 131571 | architecture-reviewer (88,353 tokens, 5 tool calls) | Y |
 
 ## Token/span diagnostics by PR
 
@@ -57,5 +57,5 @@ No SSL/TLS issues found — the Retrofit `baseUrl` uses `https://` and no certif
 **Diagnostic answers (PR-03):**
 - Was security-reviewer called? **Y** — confirmed directly from trace file `70a12d68-1807-47fd-8221-722e9e84070d/tasks/afb87084bcb332b28.output` (2 turns, agent ran to completion).
 - Span output: pasted above — `[HIGH]` hardcoded API key finding plus two `[MEDIUM]` missing-validation findings.
-- Failure mode: sub-agent not called
+- Tool never fired
 
