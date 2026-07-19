@@ -11,13 +11,13 @@ Failure modes:
 - **subagent ran but prompt insufficient** — the sub-agent ran with the right input and tools, but the prompt didn't direct it to surface the issue.
 - **N/A** — no finding is missing; the pipeline worked as expected.
 
-| Input | Total tokens | Most expensive span | security-reviewer called? |
+| Input | Total tokens | Most expensive span | `security-reviewer` called? |
 | --- | --- | --- | --- |
-| PR-01 | 115.081 | architecture-reviewer | Yes |
-| PR-02 | 116.993 | architecture-reviewer | Yes |
-| PR-03 | 115.762 | architecture-reviewer | Yes |
-| PR-04 | 118.084 | architecture-reviewer | Yes |
-| PR-05 | 131.571 | architecture-reviewer | Yes |
+| PR-01 | 115 081 | architecture-reviewer | Yes |
+| PR-02 | 116 993 | architecture-reviewer | Yes |
+| PR-03 | 115 762 | architecture-reviewer | Yes |
+| PR-04 | 118 084 | architecture-reviewer | Yes |
+| PR-05 | 131 571 | architecture-reviewer | Yes |
 
 (PR-01 = clean, PR-02 = style violations, PR-03 = hardcoded API key, PR-04 = architecture violation, PR-05 = mixed issues, 2 files. Per-sub-agent token breakdown and tool-call counts are in the "Token/span diagnostics by PR" section below.)
 
@@ -60,5 +60,5 @@ No SSL/TLS issues found — the Retrofit `baseUrl` uses `https://` and no certif
 **Diagnostic answers (PR-03):**
 - Was security-reviewer called? **Y** — confirmed directly from trace file `70a12d68-1807-47fd-8221-722e9e84070d/tasks/afb87084bcb332b28.output` (2 turns, agent ran to completion).
 - Span output: pasted above — `[HIGH]` hardcoded API key finding plus two `[MEDIUM]` missing-validation findings.
-- Failure mode: **tool never fired**.
+- A Failure mode: **tool never fired**.
 
