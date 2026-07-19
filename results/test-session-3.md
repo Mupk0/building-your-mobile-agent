@@ -33,7 +33,7 @@ final class ProfileViewModel {
     }
 }
 ```
-
+swift-conventions loaded for the Swift PR.
 Delegated to the `style-reviewer` sub-agent (which loads `swift-conventions`), scoped
 strictly to style — no architecture or security commentary.
 
@@ -92,6 +92,7 @@ class TripViewModel(
 }
 ```
 
+kotlin-conventions loaded for the Kotlin PR.
 Delegated to the `style-reviewer` sub-agent (loads `kotlin-conventions`), scoped
 strictly to style — explicitly excluding the architecture concern visible in the diff
 (ViewModel calling `apiClient` directly instead of going through a repository).
