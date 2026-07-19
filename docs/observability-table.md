@@ -13,11 +13,11 @@ Failure modes:
 
 | Input | Total tokens | Most expensive span | `security-reviewer` called? |
 | --- | --- | --- | --- |
-| PR-01 | 115 081 | architecture-reviewer | Yes |
-| PR-02 | 116 993 | architecture-reviewer | Yes |
-| PR-03 | 115 762 | architecture-reviewer | Yes |
-| PR-04 | 118 084 | architecture-reviewer | Yes |
-| PR-05 | 131 571 | architecture-reviewer | Yes |
+| PR-01 | 115,081 | architecture-reviewer | N |
+| PR-02 | 116,993 | architecture-reviewer | N |
+| PR-03 | 115,762 | architecture-reviewer | N |
+| PR-04 | 118,084 | architecture-reviewer | N |
+| PR-05 | 131,571 | architecture-reviewer | N |
 
 (PR-01 = clean, PR-02 = style violations, PR-03 = hardcoded API key, PR-04 = architecture violation, PR-05 = mixed issues, 2 files. Per-sub-agent token breakdown and tool-call counts are in the "Token/span diagnostics by PR" section below.)
 
