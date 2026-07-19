@@ -26,7 +26,7 @@ Before reporting any finding, confirm it against the corresponding file in `docs
 (grep for the ADR file if needed) and cite the ADR by name in the finding.
 
 Severity:
-- `[MEDIUM]` — architecture/ADR violations.
+- `[HIGH]` — architecture/ADR violations.
 - `[LOW]` — minor deviations with no functional impact.
 
 Report findings grouped by file, one line each:
