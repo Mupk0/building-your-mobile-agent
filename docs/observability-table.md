@@ -11,9 +11,13 @@ Failure modes:
 - **subagent ran but prompt insufficient** — the sub-agent ran with the right input and tools, but the prompt didn't direct it to surface the issue.
 - **N/A** — no finding is missing; the pipeline worked as expected.
 
-| PR | Sub-agent | Called? | Span output (summary) | Missing from final output? | Failure mode |
-|---|---|---|---|---|---|
-| PR-03 (nebius-academy-templates/mobile-pr-review-practice) | security-reviewer | Y | `[HIGH] Hardcoded live-format API key sk-live-9f8a7b6c... stored as a public val in PaymentService — secrets must not live in source` + 2 `[MEDIUM]` missing-input-validation findings (amount, token). No SSL/TLS issues found. | N | N/A — finding was called, returned, and appears in the final consolidated review as `[HIGH] Hardcoded live-format API key ... — secrets must not live in source`. |
+| Input | Total tokens | Most expensive span | `security-reviewer` called? |
+|---|---|---|---|
+| PR-01 (clean) | 115,081 (22,683 + 6,937 + 85,461) | architecture-reviewer (85,461 tokens, 5 tool calls: skill load + 3 ADR reads + confirm) | Y |
+| PR-02 (style violations) | 116,993 (22,911 + 7,101 + 86,981) | architecture-reviewer (86,981 tokens, 5 tool calls) | Y |
+| PR-03 (hardcoded API key) | 115,762 (22,903 + 7,244 + 85,615) | architecture-reviewer (85,615 tokens, 5 tool calls) | Y |
+| PR-04 (architecture violation) | 118,084 (23,003 + 7,420 + 87,661) | architecture-reviewer (87,661 tokens, 5 tool calls) | Y |
+| PR-05 (mixed issues, 2 files) | 131,571 (35,846 + 7,372 + 88,353) | architecture-reviewer (88,353 tokens, 5 tool calls) | Y |
 
 ## Token/span diagnostics by PR
 
@@ -22,14 +26,6 @@ Read directly from each sub-agent's trace file for this run (session dir
 input + cache-read + cache-creation + output tokens across all turns in
 that sub-agent's transcript. "Most expensive span" = the sub-agent whose
 transcript consumed the most total tokens for that PR.
-
-| Input | Total tokens (style + security + architecture) | Most expensive span | security-reviewer called? |
-|---|---|---|---|
-| PR-01 (clean) | 115,081 (22,683 + 6,937 + 85,461) | architecture-reviewer (85,461 tokens, 5 tool calls: skill load + 3 ADR reads + confirm) | Y |
-| PR-02 (style violations) | 116,993 (22,911 + 7,101 + 86,981) | architecture-reviewer (86,981 tokens, 5 tool calls) | Y |
-| PR-03 (hardcoded API key) | 115,762 (22,903 + 7,244 + 85,615) | architecture-reviewer (85,615 tokens, 5 tool calls) | Y |
-| PR-04 (architecture violation) | 118,084 (23,003 + 7,420 + 87,661) | architecture-reviewer (87,661 tokens, 5 tool calls) | Y |
-| PR-05 (mixed issues, 2 files) | 131,571 (35,846 + 7,372 + 88,353) | architecture-reviewer (88,353 tokens, 5 tool calls) | Y |
 
 Notes:
 - **security-reviewer was called on every PR** and in every case ran with
@@ -57,4 +53,5 @@ Notes:
 [MEDIUM] `charge(amount: Int, token: String)` performs no validation of the `token` (payment/card token) format or presence before use in the charge request — missing input validation on user-supplied data
 
 No SSL/TLS issues found — the Retrofit `baseUrl` uses `https://` and no certificate/hostname validation is disabled or bypassed in this diff.
+sub-agent not called
 ```
