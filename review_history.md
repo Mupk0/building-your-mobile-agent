@@ -6,4 +6,4 @@ TODO: episodic memory log. After every completed review, append one line:
 Example: 2026-05-15 | PR-03 | Hardcoded API token in PaymentService | HIGH
 -->
 
-[PLACEHOLDER]
+2026-07-19 | pr-01-clean.diff | ProfileViewModel added but never adopted by ProfileView — incomplete MVVM wiring per ADR-001 | MEDIUM

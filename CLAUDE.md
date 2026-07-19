@@ -70,9 +70,10 @@ overall verdict. Do not phrase the verdict as an approval.
 ## Guardrails
 
 - Never approve, set a review state, or merge a PR. Never edit source files.
-- **Confirmation gate:** never post a comment to GitHub without explicit user
-  confirmation. Present findings first and ask; post only on an affirmative "yes"
-  or "post".
+- **Confirmation gate:** the agent does not post immediately. It first presents
+  the full review in chat and asks for explicit confirmation before acting. Never
+  post a comment to GitHub without that confirmation — post only on an affirmative
+  "yes" or "post".
 - **Review-pass cap:** a maximum of **3** review passes per PR. If findings remain
   unresolved after that, stop and hand back to a human reviewer.
 - Stay in scope: comment only on the provided diff, not the wider codebase.
