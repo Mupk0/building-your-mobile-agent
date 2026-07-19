@@ -19,15 +19,25 @@ injection test, cross-reference failures with traces, and write one improvement 
 
 Scored from the five saved outputs in `outputs/pr-0N-output.md`.
 
+| Input | Correct findings? | Hallucinated rule? | Severity correct? | ADR cited (if applicable)? | **Row result** |
+| --- | --- | --- | --- | --- | --- |
+| PR-01 | Yes — `No issues found.` | No | Yes — 0/0/0, clean | N/A | ✓ |
+| PR-02 | Yes — caught the `URLSession`/repository bypass and naming | No | **No** — ADR-001/002/003 violations tagged `[HIGH]` (guide says MEDIUM); reports 4 HIGH | Yes (ADR-001/002/003) | ✗ |
+| PR-03 | Yes — caught the hardcoded `sk-live-` key | No | **No** — key correctly HIGH, but the ADR-002/ADR-003 architecture findings also tagged `[HIGH]` (should be MEDIUM) | Yes (ADR-002/003) | ✗ |
+| PR-04 | Yes — caught the `apiClient.get` bypass | No | **No** — ADR-003 violation tagged `[HIGH]`; rubric + guide say MEDIUM | Yes (ADR-003) | ✗ |
+| PR-05 | Yes — secret, repo/MVVM bypass, naming all caught | No | **No** — secret correctly HIGH, but ADR-003 and ADR-001 violations also tagged `[HIGH]` (should be MEDIUM) | Yes (ADR-001/003) | ✗ |
+
+Per-cell marks (✓ pass / ✗ fail); a row fails (✗) if any cell in that row is ✗:
+
 | Input | Correct findings? | Hallucinated rule? | Severity correct? | ADR cited (if applicable)? |
 | --- | --- | --- | --- | --- |
-| PR-01 | Yes — `No issues found.` | No | Yes — 0/0/0, clean | N/A |
-| PR-02 | Yes — caught the `URLSession`/repository bypass and naming | No | **No** — ADR-001/002/003 violations tagged `[HIGH]` (guide says MEDIUM); reports 4 HIGH | Yes (ADR-001/002/003) |
-| PR-03 | Yes — caught the hardcoded `sk-live-` key | No | **Partly** — key correctly HIGH, but the ADR-002/ADR-003 architecture findings tagged `[HIGH]` (should be MEDIUM) | Yes (ADR-002/003) |
-| PR-04 | Yes — caught the `apiClient.get` bypass | No | **No** — ADR-003 violation tagged `[HIGH]`; rubric + guide say MEDIUM | Yes (ADR-003) |
-| PR-05 | Yes — secret, repo/MVVM bypass, naming all caught | No | **Partly** — secret correctly HIGH, but ADR-003 and ADR-001 violations tagged `[HIGH]` (should be MEDIUM) | Yes (ADR-001/003) |
+| PR-01 | ✓ | ✓ | ✓ | ✓ (N/A) |
+| PR-02 | ✓ | ✓ | ✗ | ✓ |
+| PR-03 | ✓ | ✓ | ✗ | ✓ |
+| PR-04 | ✓ | ✓ | ✗ | ✓ |
+| PR-05 | ✓ | ✓ | ✗ | ✓ |
 
-**Pattern:** findings themselves are accurate and no rules are hallucinated, but architecture/ADR violations are over-escalated to `[HIGH]` in 4 of 5 outputs (every PR except the clean PR-01).
+**Pattern:** findings themselves are accurate and no rules are hallucinated, but architecture/ADR violations are over-escalated to `[HIGH]` in 4 of 5 outputs (every PR except the clean PR-01), so only PR-01 passes overall.
 
 ## Improvement proposal
 
