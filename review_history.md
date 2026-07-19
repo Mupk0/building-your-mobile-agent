@@ -8,4 +8,6 @@
 2026-07-19 | PR-03 (nebius-academy-templates/mobile-pr-review-practice) | Hardcoded live API key in PaymentService | HIGH
 2026-07-19 | PR-02 (nebius-academy-templates/mobile-pr-review-practice) | ProfileViewModel imports UIKit, calls URLSession directly, bypassing APIClient and repository — violates ADR-001/002/003 | MEDIUM
 2026-07-19 | PR-04 (nebius-academy-templates/mobile-pr-review-practice) | TripViewModel calls ApiClient directly, bypassing repository layer — violates ADR-003 | MEDIUM
-2026-07-19 | PR-05 (nebius-academy-templates/mobile-pr-review-practice) | Hardcoded client secret in CheckoutViewModel, also transmitted from client-side code | HIGH
+2026-07-19 | PR-05 (nebius-academy-templates/mobile-pr-review-practice) | Hardcoded client secret in CheckoutViewModel, also transmitted from client-side code | HIGH2026-07-19 | PR-03 (nebius-academy-templates/mobile-pr-review-practice) | Hardcoded live sk-live- payment API key in PaymentService | HIGH
+2026-07-19 | PR-04 (nebius-academy-templates/mobile-pr-review-practice) | TripViewModel calls ApiClient directly, bypassing repository layer — violates ADR-003 | HIGH
+2026-07-19 | PR-05 (nebius-academy-templates/mobile-pr-review-practice) | Hardcoded live client secret in CheckoutViewModel, also transmitted over the wire; ViewModel bypasses repository (ADR-003), View contains business logic (ADR-001) | HIGH
