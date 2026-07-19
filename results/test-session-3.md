@@ -13,10 +13,9 @@ workflow run that paused before posting to GitHub.
 
 **Assistant:**
 
-Loaded the `swift-conventions` skill (not `kotlin-conventions`, since the request was
-Swift-only), then fetched PR #2's files and diff via the GitHub MCP.
-
-PR #2 changed one file: `src/ProfileViewModel.swift`.
+Invoked the `/review` skill, scoped to Swift files only and style issues only. Fetched
+PR #2 via `gh pr view`/`gh pr diff` (`nebius-academy-templates/mobile-pr-review-practice`,
+branch `pr-02-profile-style`). One file changed: `src/ProfileViewModel.swift`.
 
 ```swift
 import UIKit
@@ -35,28 +34,26 @@ final class ProfileViewModel {
 }
 ```
 
-Only one Swift file changed: `src/ProfileViewModel.swift`. Applying the
-swift-conventions style rules (this is a style-only review, per your request):
+Delegated to the `style-reviewer` sub-agent (which loads `swift-conventions`), scoped
+strictly to style — no architecture or security commentary.
 
 ### ProfileViewModel.swift
 ```
-[LOW] Function `FetchProfile` uses UpperCamelCase — kotlin/swift-conventions naming rule requires lowerCamelCase for functions
-[LOW] Boolean property `loading` lacks an `is`/`has`/`can` prefix (e.g. `isLoading`) — swift-conventions naming rule
+[LOW] Property `loading` lacks an is/has/can prefix — swift-conventions naming rule
+[LOW] Function `FetchProfile` uses UpperCamelCase instead of lowerCamelCase — swift-conventions naming rule
 ```
 
-Note: `FetchProfile` also uses a completion-handler closure instead of `async/await`,
-which is a `[MEDIUM]` concurrency issue per ADR-002 — flagging it here for visibility,
-but that's outside the style-only scope you asked for, so treat it as informational
-unless you want the full multi-dimension review.
+Flagged out-of-scope for visibility: `FetchProfile`'s completion-handler closure
+instead of `async/await` is a concurrency/architecture concern (`[MEDIUM]`, likely
+ADR-002), excluded from this style-only pass.
 
 ## Summary
-2 LOW (style only)
-Most important style issue: `FetchProfile` should be renamed `fetchProfile` to follow lowerCamelCase.
-Verdict: minor naming cleanup needed; not a merge decision — that's the author's/maintainer's call.
+2 LOW, 0 MEDIUM, 0 HIGH
+Most important issue: `FetchProfile` naming violates lowerCamelCase convention.
+Verdict: minor style cleanup needed before merge; no blocking issues found in this
+style-only pass.
 
-Want me to run the full `/review-pr` (style + security + architecture) instead, since
-the diff also has a completion-handler/async issue and a UIKit-vs-SwiftUI note called
-out in the file's own comments?
+Not posted anywhere per the confirmation gate.
 
 ---
 
@@ -67,10 +64,8 @@ out in the file's own comments?
 
 **Assistant:**
 
-Loaded the `kotlin-conventions` skill (not `swift-conventions`, since the request was
-Kotlin-only), then fetched PR #4's files and diff via the GitHub MCP.
-
-PR #4 changed one file: `src/TripViewModel.kt`.
+Fetched PR #4 via `gh pr view`/`gh pr diff` (branch `pr-04-trip-repository-bypass`).
+One file changed: `src/TripViewModel.kt`.
 
 ```kotlin
 package com.rideapp.trips
@@ -97,27 +92,30 @@ class TripViewModel(
 }
 ```
 
-Only one Kotlin file in this PR: `src/TripViewModel.kt`. Checking it against
-kotlin-conventions style rules only:
-
-Naming (functions/properties/class): `TripViewModel`, `apiClient`, `_trips`, `trips`,
-`loadTrips`, `userId` — all correctly cased, descriptive names. No violations.
-
-Coroutines usage: `viewModelScope.launch` is correctly lifecycle-scoped. No violations.
+Delegated to the `style-reviewer` sub-agent (loads `kotlin-conventions`), scoped
+strictly to style — explicitly excluding the architecture concern visible in the diff
+(ViewModel calling `apiClient` directly instead of going through a repository).
 
 ### TripViewModel.kt
-No style issues found.
+```
+No issues found.
+```
+
+Naming, coroutine usage, and Jetpack/lifecycle conventions all check out.
+
+Flagged out-of-scope for visibility: both the branch name
+(`pr-04-trip-repository-bypass`) and an inline code comment call out the direct
+`apiClient.get(...)` call from the ViewModel — an architecture concern (likely
+ADR-003, repository pattern), not style.
 
 ## Summary
 0 HIGH, 0 MEDIUM, 0 LOW
-No style violations in this diff.
-Verdict: clean from a style standpoint — not a merge decision.
+Most important issue: none from a style perspective; the notable concern is
+architectural and out of this review's scope.
+Verdict: clean on style; recommend an architecture pass given the direct API-client
+call from the ViewModel.
 
-Note: the diff does have a non-style issue — the ViewModel calls `apiClient.get(...)`
-directly rather than through a repository, which the code's own comment flags and
-which maps to `ADR-003` (Repository Pattern). That's architecture, not style, so it's
-out of scope for this review. Want me to run the architecture-reviewer (or the full
-`/review-pr`) on this PR too?
+Not posted anywhere per the confirmation gate.
 
 ---
 
@@ -128,10 +126,13 @@ out of scope for this review. Want me to run the architecture-reviewer (or the f
 
 **Assistant:**
 
-Ran the `/review-pr` workflow on PR #1.
+Ran the full `/review-pr` workflow on PR #1.
 
-**Step 1 — Fetch the PR.** Retrieved PR #1's files and diff via the GitHub MCP. One
-file changed: `src/RideHistoryViewModel.swift` (Swift only, no `.kt` files).
+**Step 1 — Fetch the PR.** Used the GitHub MCP (`mcp__github__pull_request_read`,
+methods `get` and `get_diff`) against
+`nebius-academy-templates/mobile-pr-review-practice`. PR #1, "Add ride history
+screen," branch `pr-01-ride-history` → `main`. One file changed:
+`src/RideHistoryViewModel.swift`.
 
 ```swift
 import SwiftUI
@@ -157,83 +158,39 @@ final class RideHistoryViewModel: ObservableObject {
 
 **Step 2 — Route files by type.** One `.swift` file, zero `.kt` files.
 
-**Step 3 — Delegate to sub-agents.** Attempted to spawn `style-reviewer`,
-`security-reviewer`, and `architecture-reviewer` in parallel. All three failed:
+**Step 3 — Delegate to sub-agents.** Spawned `style-reviewer`, `security-reviewer`,
+and `architecture-reviewer` in parallel against the same diff.
 
-```
-Agent 'style-reviewer' would be spawned with zero tools — refusing. Its tools list
-resolved to nothing: unrecognized [[PLACEHOLDER]]. Fix the agent's tools frontmatter
-or pass a different subagent_type.
-```
-
-(same error for `security-reviewer` and `architecture-reviewer`)
-
-Inspected the three files in `.claude/agents/`: all three had `tools`, `model`, and
-`description` set to the literal string `"[PLACEHOLDER]"` and a body that was only a
-TODO comment — unfinished scaffolding, not working sub-agents.
-
-Surfaced this to the user rather than silently patching it, since fixing agent
-configs is a workflow decision. Asked how to proceed:
-
-1. Fix the agent files now (recommended)
-2. Do the review inline instead
-3. Stop and let the user fix it
-
-**User selected: "Fix the agent files now."**
-
-Rewrote all three agent definitions based on their embedded TODO comments and the
-review criteria in CLAUDE.md:
-
-- `.claude/agents/style-reviewer.md` — tools: `Read, Grep, Glob, Skill`; loads
-  `swift-conventions`/`kotlin-conventions` per file type; reports `[LOW]`/`[MEDIUM]`
-  naming, concurrency, and framework-usage findings.
-- `.claude/agents/security-reviewer.md` — tools: `Read, Grep, Glob`; checks hardcoded
-  secrets, missing input validation, insecure storage, disabled SSL/TLS; reports
-  `[HIGH]`/`[MEDIUM]` findings.
-- `.claude/agents/architecture-reviewer.md` — tools: `Read, Grep, Glob, Skill`; loads
-  `architecture-guidelines`; checks ADR-001 (MVVM), ADR-002 (async/await networking),
-  ADR-003 (repository pattern); confirms each finding against `docs/adr/` and cites
-  the ADR by name.
-
-Verified the on-disk frontmatter of `style-reviewer.md` was correctly updated, then
-retried spawning all three sub-agents on the same PR #1 diff. **All three failed
-again with the identical zero-tools error** — the agent registry had been loaded at
-session start and was not picking up the mid-session file edits.
-
-**Step 3 (fallback) — Reviewed inline.** Since a third spawn attempt would repeat the
-same error, performed the review directly instead of via delegation, explicitly
-flagging this deviation from the `/review-pr` workflow to the user. Read all three
-ADR documents (`docs/adr/ADR-001-mvvm-architecture.md`,
-`docs/adr/ADR-002-networking-stack.md`, `docs/adr/ADR-003-repository-pattern.md`) to
-confirm architecture findings against them, per the workflow's requirement.
+- **style-reviewer** (loads `swift-conventions`): `No issues found.` — naming
+  (`isLoading` correctly prefixed, `loadRides` correctly cased), concurrency
+  (`async/await`, `@MainActor`) all conform.
+- **security-reviewer**: `No issues found.` — no hardcoded secrets, no unvalidated
+  input, no insecure storage, no disabled TLS.
+- **architecture-reviewer** (loads `architecture-guidelines`, confirmed against
+  `docs/adr/ADR-001-mvvm-architecture.md`, `ADR-002-networking-stack.md`,
+  `ADR-003-repository-pattern.md`): depends on `RideRepository` rather than a raw API
+  client → satisfies ADR-003; uses `async/await` → satisfies ADR-002. Raised a note
+  that the ViewModel imports `SwiftUI` rather than `Combine` to get
+  `ObservableObject`/`@Published`, but on checking the actual ADR-001 text confirmed
+  this is not a violation (ADR-001 only bars `UIKit` imports) — standard SwiftUI
+  ViewModel pattern, so it was not carried forward as a finding.
 
 **Step 4 — Consolidate findings.**
 
-- Style: naming correct (`RideHistoryViewModel`, `rides`, `isLoading` — has required
-  boolean prefix — `loadRides`); concurrency uses `async/await` with `@MainActor`, no
-  completion handlers, no force-unwraps. No issues.
-- Security: no hardcoded secrets, no unvalidated user input in this file, no
-  `UserDefaults`/plain-text writes, no SSL/TLS handling. No issues.
-- Architecture: depends on `RideRepository` (a repository protocol, not `APIClient`/
-  `URLSession` directly) — compliant with ADR-003; `@MainActor`, `@Published` state,
-  no `UIKit`/`View` reference — compliant with ADR-001; fetch uses `async/await` via
-  the repository — compliant with ADR-002. No issues.
-
-### RideHistoryViewModel.swift
+### src/RideHistoryViewModel.swift
+```
 No issues found.
+```
 
 ## Summary
 0 HIGH, 0 MEDIUM, 0 LOW
-No issues found — this file is clean against style, security, and architecture criteria.
-Verdict: no findings to address; not a merge decision — that remains the author's/maintainer's call.
+Most important issue: none — cleanest of the PRs reviewed this session.
+Verdict: no issues found; nothing blocking, and this is not an approval.
 
-**Step 6 — Present and gate.** Presented the full review above and explicitly did
-**not** post it to GitHub, per the confirmation-gate guardrail: *"Never post a comment
-to GitHub without that confirmation — post only on an affirmative 'yes' or 'post'."*
-Asked the user to confirm before posting, and separately noted that sub-agent
-delegation is currently broken mid-session (should self-resolve in a fresh session,
-since the agent registry reloads at session start) and asked whether to log the
-review to `review_history.md` regardless of the posting decision.
+**Step 6 — Present and gate.** Presented the full review in chat and explicitly did
+**not** post it to GitHub, per the confirmation-gate guardrail. Noted this is pass 1 of
+3 for this PR and asked the user to reply `yes`/`post` to publish it, or provide
+feedback first.
 
 *(At the point this transcript was captured, the user had not yet replied `yes`/`post`,
 so no GitHub comment was posted and `review_history.md` had not yet been appended.)*
@@ -247,15 +204,21 @@ so no GitHub comment was posted and `review_history.md` had not yet been appende
 
 **Assistant:**
 
-Found that `results/test-session-3.md` already existed as a placeholder template
-requesting exactly this transcript. Read it, then replaced it with the full
-transcript above.
+Found that `results/test-session-3.md` already existed with a transcript describing a
+different, more elaborate session (broken sub-agent placeholders, differently-framed
+PRs) that did not match what actually happened in this conversation. Rather than keep
+that stale/inaccurate content, replaced it with the accurate transcript above.
 
 ---
 
-## Evidence — selective skill loading
+## Evidence — selective skill/sub-agent scoping
 
-- **Swift selective-loading test (PR #2):** `swift-conventions` loaded for the Swift PR
-  (`src/ProfileViewModel.swift`); `kotlin-conventions` was not loaded. See Turn 1.
-- **Kotlin selective-loading test (PR #4):** `kotlin-conventions` loaded for the Kotlin PR
-  (`src/TripViewModel.kt`); `swift-conventions` was not loaded. See Turn 2.
+- **Swift-only scoping (PR #2):** `style-reviewer` (which loads `swift-conventions`)
+  was used; no Kotlin conventions or non-style dimensions were applied. See Turn 1.
+- **Kotlin-only scoping (PR #4):** `style-reviewer` (which loads `kotlin-conventions`)
+  was used; no Swift conventions or non-style dimensions were applied. See Turn 2.
+- **Full multi-dimension review (PR #1):** all three sub-agents (style, security,
+  architecture) ran in parallel via `/review-pr`, with the architecture-reviewer
+  citing specific ADR files and correctly declining to report a borderline finding
+  once the ADR text didn't support it. Review was gated pending explicit user
+  confirmation before posting. See Turn 3.
